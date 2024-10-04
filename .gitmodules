@@ -1,0 +1,3 @@
+[submodule "nushell/modules/nuguish"]
+	path = nushell/modules/nuguish
+	url = https://github.com/gcarrarom/nuguish.git
