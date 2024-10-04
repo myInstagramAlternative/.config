@@ -154,3 +154,5 @@ $env.config.completions.external = {
     enable: true
     completer: $external_completer
 }
+
+source-env ~/.nu.nu
