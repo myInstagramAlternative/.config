@@ -513,8 +513,8 @@ export def ktp [
             {
                 namespace: $x.namespace
                 name: $x.name
-                cpu: ($x.cpu| str substring ..-1 | into float)
-                mem: ($x.mem | str substring ..-2 | into float)
+                cpu: ($x.cpu| str substring ..-2 | into float)
+                mem: ($x.mem | str substring ..-3 | into float)
             }
         }
     } else {
@@ -523,8 +523,8 @@ export def ktp [
         | each {|x|
             {
                 name: $x.name
-                cpu: ($x.cpu| str substring ..-1 | into float)
-                mem: ($x.mem | str substring ..-2 | into float)
+                cpu: ($x.cpu| str substring ..-2 | into float)
+                mem: ($x.mem | str substring ..-3 | into float)
             }
         }
     }
