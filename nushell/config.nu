@@ -226,7 +226,6 @@ $env.config = {
     }
 
     color_config: $dark_theme # if you want a more interesting theme, you can replace the empty record with `$dark_theme`, `$light_theme` or another custom record
-    use_grid_icons: true
     footer_mode: 25 # always, never, number_of_rows, auto
     float_precision: 2 # the precision for displaying floats in tables
     buffer_editor: null # command that will be used to edit the current line buffer with ctrl+o, if unset fallback to $env.EDITOR and $env.VISUAL
@@ -430,7 +429,7 @@ $env.config = {
                   | reverse
                   | uniq
                   | str join (char -i 0)
-                  | fzf --scheme=history 
+                  | fzf --scheme=history
                       --read0
                       --layout=reverse
                       --height=40%
@@ -989,6 +988,7 @@ use kubernetes *
 source scripts/nupdater/nupdater.nu
 source scripts/nuenv/nuenv.nu
 source scripts/nualiastips/nualiastips.nu
+source modules/fnm/mod.nu
 source completions/bitwarden-cli-completions.nu
 source completions/cargo-completions.nu
 source completions/curl-completions.nu
@@ -998,5 +998,3 @@ source completions/rg-completions.nu
 source completions/ssh-completions.nu
 source completions/tcpdump-completions.nu
 source completions/tldr-completions.nu
-
-
