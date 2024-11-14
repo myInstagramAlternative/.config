@@ -17,17 +17,22 @@
       # $ nix-env -qaP | grep wget
       environment.systemPackages =
         [ pkgs.neovim
-	  pkgs.iterm2
-	  pkgs.mkalias
-	  pkgs.obsidian
-	  pkgs.tmux
-    pkgs.starship
+	        pkgs.iterm2
+	        pkgs.mkalias
+	        pkgs.obsidian
+	        pkgs.tmux
+          pkgs.starship
+          pkgs.zoxide
+          pkgs.maccy
+          pkgs.vscode
+          # pkgs.steam # broken glibc-nolibgcc-2.40-36
         ];
 
       homebrew = {
 	enable = true;
 	casks = [
 	  "firefox"
+    "microsoft-teams"
 	];
 	# onActivation.cleanup "zap";
 	onActivation.autoUpdate = true;
@@ -92,6 +97,25 @@ in
       #nixpkgs.hostPlatform = "x86_64-darwin";
       nixpkgs.hostPlatform = "aarch64-darwin";
     };
+homeconfig = {pkgs, ...}: {
+            # this is internal compatibility configuration
+            # for home-manager, don't change this!
+            home.stateVersion = "24.05";
+            # Let home-manager install and manage itself.
+            programs.home-manager.enable = true;
+
+            programs.zoxide.enable = true;
+            programs.zoxide.enableNushellIntegration = true;
+            programs.zoxide.enableZshIntegration = true;
+
+            home.homeDirectory = builtins.toPath "/Users/jesteibice/";
+
+            home.packages = with pkgs; [];
+
+            home.sessionVariables = {
+                EDITOR = "nvim";
+            };
+        };
   in
   {
     # Build darwin flake using:
@@ -109,9 +133,10 @@ in
     }
   home-manager.darwinModules.home-manager
           {
+            users.users.jesteibice.home = "/Users/jesteibice";
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.jesteibice = import ./home.nix;
+            home-manager.users.jesteibice = homeconfig;
 
             # Optionally, use home-manager.extraSpecialArgs to pass
             # arguments to home.nix
