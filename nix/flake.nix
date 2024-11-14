@@ -78,9 +78,6 @@ in
 
       # Enable alternative shell support in nix-darwin.
       programs.zsh.enable = true;
-      programs.starship = {
-        enable = true;
-      };
       # programs.fish.enable = true;
 
       # Set Git commit hash for darwin-version.
