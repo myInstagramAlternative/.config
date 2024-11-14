@@ -1,3 +1,12 @@
 [submodule "nushell/modules/nuguish"]
 	path = nushell/modules/nuguish
 	url = https://github.com/gcarrarom/nuguish.git
+[submodule "nushell/scripts/nualiastips"]
+  path = nushell/scripts/nualiastips
+	url = https://github.com/fancy-whale/NuAliasTips.git
+[submodule "nushell/scripts/nuenv"]
+  path = nushell/scripts/nuenv
+  url = https://github.com/fancy-whale/nuenv.git
+[submodule "nushell/scripts/nupdater"]
+  path = nushell/scripts/nupdater
+  url = https://github.com/fancy-whale/nupdater.git
