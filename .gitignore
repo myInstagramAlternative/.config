@@ -3,3 +3,4 @@
 !.gitignore
 !nushell/
 !helix/
+!nvim/
