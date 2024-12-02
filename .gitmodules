@@ -10,6 +10,6 @@
 [submodule "nushell/scripts/nupdater"]
   path = nushell/scripts/nupdater
   url = https://github.com/fancy-whale/nupdater.git
-[submodule "tmux"]
-	path = tmux
+[submodule ".tmux"]
+	path = .tmux
 	url = https://github.com/gpakosz/.tmux.git
