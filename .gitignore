@@ -11,3 +11,5 @@
 !yabai/**
 !nix/
 !nix/**
+!tmux
+!tmux/**

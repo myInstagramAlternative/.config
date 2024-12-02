@@ -24,7 +24,27 @@
           pkgs.starship
           pkgs.zoxide
           pkgs.maccy
+          pkgs.fzf
           pkgs.vscode
+          pkgs.tailscale
+          pkgs.kubectl
+          pkgs.kubectx
+          pkgs.stern
+          pkgs.viddy
+          pkgs.fluxcd
+          pkgs.kubernetes-helm
+          pkgs.fnm
+          pkgs.python3
+          pkgs.poetry
+          pkgs.azure-cli
+          pkgs.difftastic
+          pkgs.jdk
+          pkgs.wget
+          pkgs.tlrc
+          pkgs.openapi-generator-cli
+          pkgs.silver-searcher
+          pkgs.nmap
+          # pkgs.blender # broken...
           # pkgs.steam # broken glibc-nolibgcc-2.40-36
         ];
 
@@ -33,11 +53,22 @@
 	casks = [
 	  "firefox"
     "microsoft-teams"
+    "ollama"
+    "MonitorControl"
+    "aldente"
+    "qview"
+    "blender"
+    "vlc"
 	];
+  brews = [
+    "ffmpeg"
+  ];
 	# onActivation.cleanup "zap";
 	onActivation.autoUpdate = true;
 	onActivation.upgrade = true;
       };
+
+
 
 system.activationScripts.applications.text = let
   env = pkgs.buildEnv {
@@ -61,15 +92,38 @@ in
 
   system.defaults = {
 	  dock.autohide = true;
+    dock.autohide-time-modifier = 0.0;
+    dock.autohide-delay = 0.1;
+    dock.expose-animation-duration = 0.0;
+    dock.expose-group-by-app = true;
+    dock.mouse-over-hilite-stack = true;
+    dock.static-only = true;
+    dock.wvous-tl-corner = 2;
+    dock.wvous-tr-corner = 12;
+    dock.wvous-br-corner = 3;
+
+
 	  dock.persistent-apps = [
 	    "${pkgs.iterm2}/Applications/iTerm2.app"
 	    "/Applications/Firefox.app"
+      "${pkgs.obsidian}/Applications/Obsidian.app"
 	  ];
 	  finder.FXPreferredViewStyle = "clmv";
+    finder._FXSortFoldersFirst = true;
+    finder.AppleShowAllExtensions = true;
+    finder.QuitMenuItem = true;
+    finder.ShowPathbar = true;
+    WindowManager.EnableStandardClickToShowDesktop = false;
+    trackpad.Clicking = true;
+    trackpad.Dragging = true;
+    trackpad.TrackpadRightClick = true;
 	  loginwindow.GuestEnabled = false;
 	  NSGlobalDomain.KeyRepeat = 2;
 	  NSGlobalDomain."com.apple.swipescrolldirection" = false;
   };
+
+    system.keyboard.enableKeyMapping = true;
+    system.keyboard.remapCapsLockToControl = true;
 
       users.users.jesteibice = {
         shell = pkgs.nushell;
@@ -78,6 +132,13 @@ in
       # Auto upgrade nix package and the daemon service.
       services.nix-daemon.enable = true;
       # nix.package = pkgs.nix;
+      services.tailscale.enable = true;
+      services.spotifyd = {
+        enable = true;
+      };
+
+      services.skhd.enable = true;
+      services.yabai.enable = true;
 
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
@@ -107,6 +168,15 @@ homeconfig = {pkgs, ...}: {
             programs.zoxide.enable = true;
             programs.zoxide.enableNushellIntegration = true;
             programs.zoxide.enableZshIntegration = true;
+
+            programs.git = {
+              enable = true;
+              aliases = {
+                dlog = "-c diff.external=difft log --ext-diff";
+                dshow = "-c diff.external=difft show --ext-diff";
+                ddiff = "-c diff.external=difft diff";
+              };
+            };
 
             home.homeDirectory = builtins.toPath "/Users/jesteibice/";
 
