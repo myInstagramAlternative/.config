@@ -13,3 +13,5 @@
 !nix/**
 !tmux
 !tmux/**
+!.tmux
+!.tmux/**
