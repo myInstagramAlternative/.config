@@ -41,6 +41,10 @@ return {
             vim.lsp.buf.hover()
           end,
         })
+
+        vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+          vim.lsp.handlers.hover, { focusable = false }
+        )
       end
 
       -- LSP server configurations

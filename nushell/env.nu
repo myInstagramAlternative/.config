@@ -98,7 +98,16 @@ $env.NU_PLUGIN_DIRS = [
 # path add ($env.CARGO_HOME | path join "bin")
 # path add ($env.HOME | path join ".local" "bin")
 # $env.PATH = ($env.PATH | uniq)
-$env.PATH = ($env.PATH | append '/Users/fam/go/bin')
+$env.PATH = ($env.PATH | append '/Users/jesteibice/go/bin')
+
+$env.PATH = ($env.PATH | append '/opt/homebrew/bin')
+$env.PATH = ($env.PATH | append '/opt/homebrew/sbin')
+$env.PATH = ($env.PATH | append '/Users/jestebice/.nix-profile/bin')
+$env.PATH = ($env.PATH | append '/etc/profiles/per-user/jestebice/bin')
+$env.PATH = ($env.PATH | append '/run/current-system/sw/bin')
+$env.PATH = ($env.PATH | append '/nix/var/nix/profiles/default/bin')
+$env.PATH = ($env.PATH | append '/usr/local/bin')
+
 # To load from a custom file you can use:
 # source ($nu.default-config-dir | path join 'custom.nu')
 $env.EDITOR = "hx"
@@ -123,7 +132,7 @@ let external_completer = {|spans|
     let expanded_alias = scope aliases
     | where name == $spans.0
     | get -i 0.expansion
- 
+
     let spans = if $expanded_alias != null {
         $spans
         | skip 1
@@ -131,7 +140,7 @@ let external_completer = {|spans|
     } else {
         $spans
     }
- 
+
     match $spans.0 {
         # # carapace completions are incorrect for nu
         # nu => $fish_completer

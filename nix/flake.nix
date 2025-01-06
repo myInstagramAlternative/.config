@@ -46,10 +46,17 @@
           pkgs.nmap
           # pkgs.blender # broken...
           # pkgs.steam # broken glibc-nolibgcc-2.40-36
+          pkgs.ripgrep
+          pkgs.fd
+          pkgs.go
+          pkgs.openscad
         ];
 
       homebrew = {
 	enable = true;
+  taps = [
+    "hashicorp/tap"
+  ];
 	casks = [
 	  "firefox"
     "microsoft-teams"
@@ -59,10 +66,13 @@
     "qview"
     "blender"
     "vlc"
+    "ghostty"
 	];
   brews = [
     "ffmpeg"
+    "hashicorp/tap/terraform"
   ];
+
 	# onActivation.cleanup "zap";
 	onActivation.autoUpdate = true;
 	onActivation.upgrade = true;
