@@ -3,7 +3,7 @@
 # version = "0.96.0"
 
 def create_left_prompt [] {
-    let dir = match (do --ignore-shell-errors { $env.PWD | path relative-to $nu.home-path }) {
+    let dir = match (do -i { $env.PWD | path relative-to $nu.home-path }) {
         null => $env.PWD
         '' => '~'
         $relative_pwd => ([~ $relative_pwd] | path join)
@@ -107,10 +107,11 @@ $env.PATH = ($env.PATH | append '/etc/profiles/per-user/jestebice/bin')
 $env.PATH = ($env.PATH | append '/run/current-system/sw/bin')
 $env.PATH = ($env.PATH | append '/nix/var/nix/profiles/default/bin')
 $env.PATH = ($env.PATH | append '/usr/local/bin')
+$env.PATH = ($env.PATH | append '/Users/jesteibice/.local/bin')
 
 # To load from a custom file you can use:
 # source ($nu.default-config-dir | path join 'custom.nu')
-$env.EDITOR = "hx"
+$env.EDITOR = "nvim"
 $env.VISUAL = $env.EDITOR
 
 $env.DOTNET_CLI_TELEMETRY_OPTOUT = 1
@@ -165,3 +166,19 @@ $env.config.completions.external = {
 }
 
 source-env ~/.nu.nu
+
+### fnm for nodejs
+load-env (fnm env --shell bash
+    | lines
+    | str replace 'export ' ''
+    | str replace -a '"' ''
+    | split column "="
+    | rename name value
+    | where name != "FNM_ARCH" and name != "PATH"
+    | reduce -f {} {|it, acc| $acc | upsert $it.name $it.value }
+)
+
+$env.PATH = ($env.PATH
+    | split row (char esep)
+    | prepend $"($env.FNM_MULTISHELL_PATH)/bin"
+)

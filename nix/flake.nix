@@ -50,6 +50,9 @@
           pkgs.fd
           pkgs.go
           pkgs.openscad
+          pkgs.python312Packages.urllib3
+          pkgs.python312Packages.pip
+          pkgs.bat
         ];
 
       homebrew = {
@@ -67,10 +70,14 @@
     "blender"
     "vlc"
     "ghostty"
+    "obs"
+    "rustdesk"
 	];
   brews = [
     "ffmpeg"
     "hashicorp/tap/terraform"
+    "television"
+    "yq"
   ];
 
 	# onActivation.cleanup "zap";
@@ -140,7 +147,7 @@ in
       };
 
       # Auto upgrade nix package and the daemon service.
-      services.nix-daemon.enable = true;
+      # services.nix-daemon.enable = true;
       # nix.package = pkgs.nix;
       services.tailscale.enable = true;
       services.spotifyd = {
