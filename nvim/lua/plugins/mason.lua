@@ -15,5 +15,11 @@ return {
       "MasonToolsUpdate", "MasonToolsUpdateSync",
       "MasonToolsClean",
     }
+  },
+  {
+    "mfussenegger/nvim-lint",
+  },
+  {
+    "rshkarin/mason-nvim-lint",
   }
 }

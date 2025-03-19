@@ -16,7 +16,6 @@ if not vim.loop.fs_stat(lazypath) then
 end
 
 vim.cmd("au BufRead,BufNewFile *.templ setfiletype templ")
-local autocmd = vim.api.nvim_create_autocmd
 
 vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
 	pattern = { "*.templ" },
@@ -25,6 +24,10 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
 		vim.api.nvim_buf_set_option(buf, "filetype", "templ")
 	end,
 })
+
+-- Since clipboard is disabled, yank to 0 register and then copy to clipboard
+vim.api.nvim_set_keymap('n', '<leader>c', ':let @+=@0<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<leader>c', '"0y:let @+=@0<CR>', { noremap = true, silent = true })
 
 vim.opt.rtp:prepend(lazypath)
 
@@ -35,27 +38,30 @@ vim.o.hlsearch = false
 vim.wo.number = true
 
 -- Tabs vs spaces
-vim.o.tabstop = 2 -- A TAB character looks like 4 spaces
+vim.o.tabstop = 2      -- A TAB character looks like 4 spaces
 vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
-vim.o.softtabstop = 2 -- Number of spaces inserted instead of a TAB character
-vim.o.shiftwidth = 2 -- Number of spaces inserted when indenting
+vim.o.softtabstop = 2  -- Number of spaces inserted instead of a TAB character
+vim.o.shiftwidth = 2   -- Number of spaces inserted when indenting
 
 -- Enable mouse mode
 vim.o.mouse = "a"
+-- Used in bufferline for hovering over buffer tabs
+vim.o.mousemoveevent = true
 
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.o.clipboard = "unnamedplus"
+-- vim.o.clipboard = "unnamedplus"
 
 -- Enable break indent
 vim.o.breakindent = true
 
 -- Write buffer on leaving insert mode
-autocmd("InsertLeave", {
-	pattern = "*",
-	command = "write"
-  })
+-- local autocmd = vim.api.nvim_create_autocmd
+-- autocmd("InsertLeave", {
+-- 	pattern = "*",
+-- 	command = "write"
+-- })
 
 -- Save undo history
 vim.o.undofile = true
@@ -82,4 +88,3 @@ local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
 vim.env.PATH = vim.fn.stdpath("data") .. "/mason/bin" .. (is_windows and ";" or ":") .. vim.env.PATH
 
 require("lazy").setup("plugins")
-
