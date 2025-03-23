@@ -36,7 +36,7 @@ export def get-sign [cmd] {
 
 # "test -h [123 (3213 3)] 123 `a sdf` --cd --ef sadf -g" | token
 export def token [] {
-    let s = ($in | split row '' | range 1..-2)
+    let s = ($in | split row '' | slice 1..-2)
     let s = if ($s | last) == ' ' { $s } else { $s | append ' ' }
     mut par = []
     mut res = []
