@@ -25,6 +25,8 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
 	end,
 })
 
+vim.api.nvim_set_keymap('i', 'jj', '<Esc>', { noremap = true })
+
 -- Since clipboard is disabled, yank to 0 register and then copy to clipboard
 vim.api.nvim_set_keymap('n', '<leader>c', ':let @+=@0<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<leader>c', '"0y:let @+=@0<CR>', { noremap = true, silent = true })
