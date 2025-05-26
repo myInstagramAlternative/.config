@@ -23,7 +23,8 @@ return {
       auto_suggestions_provider = nil, -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
       openai = {
         endpoint = "https://api.anthropic.com",
-        model = "claude-3-7-sonnet-20250219",
+        -- model = "claude-3-7-sonnet-20250219", -- Rate limit 40k tokens per minute smh
+        model = "claude-3-5-haiku-20241022",
         -- timeout = 30000, -- Timeout in milliseconds
         temperature = 0,
         max_tokens = 4096,

@@ -61,6 +61,14 @@ return {
         capabilities = capabilities,
       })
 
+      lspconfig.tsserver.setup {
+        on_attach = function(client, bufnr)
+          vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+            vim.lsp.handlers.hover, { focusable = false }
+          )
+        end,
+      }
+
       lspconfig.rust_analyzer.setup({
         on_attach = on_attach,
         capabilities = capabilities,

@@ -116,10 +116,6 @@ $env.VISUAL = $env.EDITOR
 
 $env.DOTNET_CLI_TELEMETRY_OPTOUT = 1
 
-let zoxide_completer = {|spans|
-    ls | where type == 'dir' | get name | to text | fzf --filter $spans.1 | lines | append (zoxide query -l | fzf --filter $spans.1 | lines ) | each {|ea| $"'($ea)'"}
-}
-
 let kubectl_completer = {|spans|
     fish --command $'complete "--do-complete=kubectl ($spans | range 1..| str join " ")"'
     | decode utf-8
@@ -152,10 +148,6 @@ let external_completer = {|spans|
         # use kubectl completions for kubectl commands
         kubectl => $kubectl_completer
         kubecolor => $kubectl_completer
-        # use zoxide completions for zoxide commands
-        __zoxide_z | __zoxide_zi => $zoxide_completer
-        z => $zoxide_completer
-        cd => $zoxide_completer
         # _ => $carapace_completer
     } | do $in $spans
 }

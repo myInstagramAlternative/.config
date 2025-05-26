@@ -1,45 +1,46 @@
 local options = {
-    panel = {
-      enabled = true,
-      auto_refresh = false,
-      keymap = {
-        jump_prev = "[[",
-        jump_next = "]]",
-        accept = "<CR>",
-        refresh = "gr",
-        open = "<M-CR>",
-      },
-      layout = {
-        position = "bottom", -- | top | left | right
-        ratio = 0.4,
-      },
+  panel = {
+    enabled = true,
+    auto_refresh = false,
+    keymap = {
+      jump_prev = "[[",
+      jump_next = "]]",
+      accept = "<CR>",
+      refresh = "gr",
+      open = "<M-CR>",
     },
-    suggestion = {
-      enabled = true,
-      auto_trigger = true,
-      debounce = 75,
-      keymap = {
-        accept = "<M-l>",
-        accept_word = false,
-        accept_line = "<C-j>",
-        next = "<M-]>",
-        prev = "<M-[>",
-        dismiss = "<C-]>",
-      },
+    layout = {
+      position = "bottom",   -- | top | left | right
+      ratio = 0.4,
     },
-    filetypes = {
-      yaml = false,
-      markdown = false,
-      help = false,
-      gitcommit = false,
-      gitrebase = false,
-      hgcommit = false,
-      svn = false,
-      cvs = false,
-      ["."] = false,
+  },
+  suggestion = {
+    enabled = true,
+    auto_trigger = true,
+    debounce = 75,
+    keymap = {
+      accept = "<C-M-l>",
+      accept_word = "<M-w>",
+      accept_line = "<C-j>",
+      next = "<M-]>",
+      prev = "<M-[>",
+      dismiss = "<C-]>",
     },
-    copilot_node_command = "node", -- Node.js version must be > 16.x
-    server_opts_overrides = {},
-  }
-  
-  return options
+  },
+  filetypes = {
+    yaml = false,
+    markdown = false,
+    help = false,
+    gitcommit = false,
+    gitrebase = false,
+    hgcommit = false,
+    svn = false,
+    cvs = false,
+    ["."] = false,
+  },
+  copilot_node_command = "node",   -- Node.js version must be > 16.x
+  server_opts_overrides = {},
+}
+
+return options
+
