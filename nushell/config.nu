@@ -918,7 +918,7 @@ $env.config = {
 
 
 use ~/.cache/starship/init.nu
-use nuguish/nuguish.nu *
+use nuguish/ *
 use const/const.nu *
 use kubernetes *
 # source scripts/nupdater/nupdater.nu
