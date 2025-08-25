@@ -4,7 +4,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
@@ -35,7 +35,6 @@
             pkgs.maccy
             pkgs.fzf
             pkgs.vscode
-            pkgs.tailscale
             pkgs.kubectl
             pkgs.kubectx
             pkgs.stern
@@ -66,6 +65,14 @@
             pkgs.rustup
             pkgs.sniffnet
             pkgs.mosh
+            pkgs.kubecolor
+            pkgs.dotnet-sdk_8
+            pkgs.zellij
+            pkgs.atuin
+            pkgs.eza
+            pkgs.kustomize
+            pkgs.ansible_2_17
+            pkgs.jmespath
           ];
 
           homebrew = {
@@ -73,11 +80,13 @@
             taps = [
               "hashicorp/tap"
               "homebrew/bundle"
+              "vitobotta/tap"
+              # "gcarrarom/fancygui" = "https://github.com/gcarrarom/homebrew-fancygui"
             ];
             casks = [
               "firefox"
               "microsoft-teams"
-              "ollama"
+              # "ollama"
               "MonitorControl"
               "aldente"
               "qview"
@@ -87,10 +96,12 @@
               "obs"
               "rustdesk"
               "hammerspoon"
+              "tunnelblick"
             ];
             brews = [
               "ffmpeg"
               "hashicorp/tap/terraform"
+              "vitobotta/tap/hetzner_k3s"
               "television"
               "yq"
             ];
@@ -126,7 +137,7 @@
             dock.autohide-time-modifier = 0.0;
             dock.autohide-delay = 0.1;
             dock.expose-animation-duration = 0.0;
-            dock.expose-group-by-app = true;
+            dock.expose-group-apps = true;
             dock.mouse-over-hilite-stack = true;
             dock.static-only = true;
             dock.wvous-tl-corner = 2;
@@ -155,6 +166,9 @@
           system.keyboard.enableKeyMapping = true;
           system.keyboard.remapCapsLockToControl = true;
 
+          # Set the primary user for options that require it
+          system.primaryUser = "jesteibice";
+
           users.users.jesteibice = {
             shell = pkgs.nushell;
           };
@@ -162,7 +176,6 @@
           # Auto upgrade nix package and the daemon service.
           # services.nix-daemon.enable = true;
           # nix.package = pkgs.nix;
-          services.tailscale.enable = true;
           services.spotifyd = {
             enable = true;
           };

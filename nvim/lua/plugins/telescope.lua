@@ -11,7 +11,7 @@ return {
         { "<leader>ff", builtin.find_files,                                               desc = "Find File" },
         { "<leader>fg", builtin.live_grep,                                                desc = "Find with Grep" },
         { "<leader>fh", builtin.help_tags,                                                desc = "Find Help" },
-        { "<leader>fn", ":Telescope file_browser path=%:p:help |select_buffer=true<CR>|", desc = "File Browser" },
+        { "<leader>fn", ":Telescope file_browser path=%:p:h select_buffer=true<CR>", desc = "File Browser" },
       })
     end,
     opts = function()
@@ -34,12 +34,12 @@ return {
         },
         extensions = {
           file_browser = {
-            theme = "nord",
+            theme = "ivy",
             hijack_netrw = true,
           },
         },
         extensions_list = {
-          -- "file_browser",
+          "file_browser",
         },
       }
     end,
@@ -56,9 +56,9 @@ return {
   {
     "kelly-lin/telescope-ag",
     dependencies = { "nvim-telescope/telescope.nvim" },
-  }
-  --{
-  --   "nvim-telescope/telescope-file-browser.nvim",
-  --   dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
-  -- },
+  },
+  {
+    "nvim-telescope/telescope-file-browser.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
+  },
 }
