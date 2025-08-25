@@ -1033,3 +1033,313 @@ def --env load-atuin-vars [] {
 
 # Auto-load atuin vars on shell startup
 load-atuin-vars
+
+
+def dev-tab [
+    --name (-n): string  # Optional tab name
+    --directory (-d): string  # Optional starting directory
+] {
+
+    # Use zoxide interactive to select directory
+    mut selected_dir = "" 
+
+    if ($directory | is-empty) {
+        $selected_dir = (zoxide query --interactive)
+    } else {
+        $selected_dir = $directory
+    }
+
+    if ($selected_dir | is-empty) {
+        print "No directory selected"
+        return
+    }
+
+    # Change to the selected directory
+    cd $selected_dir
+
+    # Get the folder name for default tab name
+    mut folder_name = (pwd | path basename)
+
+    # Use provided name or default to folder name
+    let tab_name = if ($name | is-empty) {
+        $folder_name
+    } else {
+        $name
+    }
+
+    # Build and execute the zellij command
+    let cmd = $"zellij action new-tab --layout dev-layout --name ($tab_name)"
+    nu -c $cmd
+}
+
+# Create a pull request in Azure DevOps
+export def create-pr [
+    --source-branch: string = ""  # Source branch (defaults to current branch)
+    --target-branch: string = "main"  # Target branch
+    --org: string = ""  # Azure DevOps organization
+    --project: string = ""  # Azure DevOps project
+    --repo: string = ""  # Repository name
+    --work-item: int = 0  # Work item ID to link to PR
+    --auto-complete  # Enable auto-complete with post-completion options
+] {
+    # Check if PAT is set
+    let pat = $env.AZURE_DEVOPS_PAT? | default ""
+    if ($pat | is-empty) {
+        print "Error: AZURE_DEVOPS_PAT environment variable not set"
+        print "Set it with: $env.AZURE_DEVOPS_PAT = your_token"
+        return
+    }
+
+    # Get current branch if not specified
+    let current_branch = if ($source_branch | is-empty) {
+        git branch --show-current | str trim
+    } else {
+        $source_branch
+    }
+
+    print $"Using source branch: ($current_branch)"
+
+    # Get recent commit messages for title selection
+    let commits = git log --oneline -10 | lines | each { |line|
+        let hash = $line | split column " " | get column1 | get 0
+        let message = $line | str replace $"($hash) " ""
+        {
+            hash: $hash
+            message: $message
+        }
+    }
+
+    if ($commits | is-empty) {
+        print "Error: No commits found"
+        return
+    }
+
+    # Select commit using fzf or manual selection
+    let selected_commit = if (which fzf | is-not-empty) {
+        let selection = $commits | each { |commit| $"($commit.hash) ($commit.message)" } | to text | fzf --prompt "Select commit for PR title: "
+        if ($selection | is-empty) {
+            print "No selection made"
+            return
+        }
+        let hash = $selection | split column " " | get column1 | get 0
+        $commits | where hash == $hash | get 0
+    } else {
+        # Fallback to manual selection
+        print "Select a commit message for PR title:"
+        $commits | enumerate | each { |item|
+            print $"($item.index + 1): ($item.item.message)"
+        }
+        
+        let selection = input "Enter selection (1-10): " | into int
+        if ($selection < 1 or $selection > ($commits | length)) {
+            print "Invalid selection"
+            return
+        }
+        $commits | get ($selection - 1)
+    }
+
+    let title = $selected_commit.message
+
+    print $"Selected title: ($title)"
+
+    # Ask if description is needed
+    let use_description = input "Use commit message as description? (y/N): " | str downcase
+    let description = if ($use_description == "y" or $use_description == "yes") {
+        $title
+    } else {
+        ""
+    }
+
+    # Extract org, project, and repo from git remote if not provided
+    let remote_info = if ($org | is-empty) or ($project | is-empty) or ($repo | is-empty) {
+        let remote_url = git remote get-url origin | str trim
+        
+        # Parse Azure DevOps URL patterns:
+        # https://dev.azure.com/org/project/_git/repo
+        # https://org@dev.azure.com/org/project/_git/repo  
+        # git@ssh.dev.azure.com:v3/org/project/repo
+        if ($remote_url | str contains "dev.azure.com") {
+            if ($remote_url | str starts-with "git@ssh.dev.azure.com") {
+                # SSH format: git@ssh.dev.azure.com:v3/org/project/repo
+                let parts = $remote_url | str replace "git@ssh.dev.azure.com:v3/" "" | split row "/"
+                {
+                    org: ($parts | get 0)
+                    project: ($parts | get 1) 
+                    repo: ($parts | get 2)
+                }
+            } else {
+                # HTTPS format: https://dev.azure.com/org/project/_git/repo
+                let parts = $remote_url | str replace --regex "https://.*dev.azure.com/" "" | split row "/"
+                {
+                    org: ($parts | get 0)
+                    project: ($parts | get 1)
+                    repo: ($parts | get 3)  # Skip "_git" at index 2
+                }
+            }
+        } else {
+            { org: "", project: "", repo: "" }
+        }
+    } else {
+        { org: $org, project: $project, repo: $repo }
+    }
+
+    # Use extracted values or prompt for missing ones
+    let org_name = if ($org | is-empty) {
+        if ($remote_info.org | is-empty) {
+            input "Azure DevOps organization: "
+        } else {
+            print $"Using organization from git remote: ($remote_info.org)"
+            $remote_info.org
+        }
+    } else {
+        $org
+    }
+
+    let project_name = if ($project | is-empty) {
+        if ($remote_info.project | is-empty) {
+            input "Azure DevOps project: "
+        } else {
+            print $"Using project from git remote: ($remote_info.project)"
+            $remote_info.project
+        }
+    } else {
+        $project
+    }
+
+    let repo_name = if ($repo | is-empty) {
+        if ($remote_info.repo | is-empty) {
+            input "Repository name: "
+        } else {
+            print $"Using repository from git remote: ($remote_info.repo)"
+            $remote_info.repo
+        }
+    } else {
+        $repo
+    }
+
+    # Ask for work item if not provided
+    let work_item_id = if ($work_item == 0) {
+        let wi_input = input "Work item ID to link (leave empty to skip): "
+        if ($wi_input | is-empty) {
+            0
+        } else {
+            $wi_input | into int
+        }
+    } else {
+        $work_item
+    }
+
+    # Create PR payload
+    let payload = if ($work_item_id > 0) {
+        let base_payload = {
+            sourceRefName: $"refs/heads/($current_branch)"
+            targetRefName: $"refs/heads/($target_branch)"
+            title: $title
+            description: $description
+            workItemRefs: [
+                {
+                    id: $work_item_id
+                }
+            ]
+        }
+        
+        if $auto_complete {
+            $base_payload | merge {
+                autoCompleteSetBy: {
+                    id: "me"
+                }
+                completionOptions: {
+                    transitionWorkItems: true
+                    deleteSourceBranch: true
+                }
+            }
+        } else {
+            $base_payload
+        }
+    } else {
+        let base_payload = {
+            sourceRefName: $"refs/heads/($current_branch)"
+            targetRefName: $"refs/heads/($target_branch)"
+            title: $title
+            description: $description
+        }
+        
+        if $auto_complete {
+            $base_payload | merge {
+                autoCompleteSetBy: {
+                    id: "me"
+                }
+                completionOptions: {
+                    transitionWorkItems: true
+                    deleteSourceBranch: true
+                }
+            }
+        } else {
+            $base_payload
+        }
+    }
+
+    # Create authorization header
+    let auth_string = $":($pat)" | encode base64
+    let url = $"https://dev.azure.com/($org_name)/($project_name)/_apis/git/repositories/($repo_name)/pullrequests?api-version=7.0"
+
+    print "Creating pull request..."
+    print $"URL: ($url)"
+    print $"Source: ($current_branch) -> Target: ($target_branch)"
+    if $auto_complete {
+        print "Auto-complete enabled: will complete work items and delete source branch"
+    }
+    if ($work_item_id > 0) {
+        print $"Linking work item: ($work_item_id)"
+    }
+
+    # Make the API request with error handling
+    let response = try {
+        http post $url ($payload | to json) --headers {
+            "Authorization": $"Basic ($auth_string)"
+            "Content-Type": "application/json"
+        }
+    } catch { |err|
+        # Try to get the response body for more details
+        let detailed_response = try {
+            http post $url ($payload | to json) --headers {
+                "Authorization": $"Basic ($auth_string)"
+                "Content-Type": "application/json"
+            } --allow-errors
+        } catch { |inner_err|
+            null
+        }
+        
+        if ($detailed_response != null) {
+            print $"❌ API Error: ($err)"
+            print $"Response body: ($detailed_response | to json --indent 2)"
+        } else {
+            print $"❌ Network Error: ($err)"
+        }
+        return
+    }
+
+    # Handle response
+    if ($response != null) {
+        if ($response | get -i pullRequestId | is-not-empty) {
+            let pr_id = $response | get pullRequestId
+            let pr_url = $"https://dev.azure.com/($org_name)/($project_name)/_git/($repo_name)/pullrequest/($pr_id)"
+            print $"✅ Pull request created successfully!"
+            
+            # Return structured data for piping
+            {
+                id: $pr_id
+                url: $pr_url
+                title: $title
+                source_branch: $current_branch
+                target_branch: $target_branch
+            }
+        } else {
+            print "❌ Unexpected response format"
+            print $"Response: ($response | to json --indent 2)"
+            null
+        }
+    } else {
+        null
+    }
+}
