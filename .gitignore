@@ -1,18 +1,18 @@
 *
 
 !.gitignore
-!nushell/
-!helix/
+
+!nushell/**
+!helix/**
 !nvim/**
-!nvim/
-!skhd/
 !skhd/**
-!yabai/
 !yabai/**
-!nix/
 !nix/**
-!tmux
 !tmux/**
-!.tmux
 !.tmux/**
+!atuin/**
+
+!tmux
+!.tmux
+
 tmux/plugins/**

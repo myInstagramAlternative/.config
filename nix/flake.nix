@@ -177,7 +177,7 @@
           # services.nix-daemon.enable = true;
           # nix.package = pkgs.nix;
           services.spotifyd = {
-            enable = true;
+            enable = false;
           };
 
           services.skhd.enable = true;
