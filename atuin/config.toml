@@ -1,0 +1,5 @@
+sync_address = "https://atuin.jesteibice.com"
+sync_frequency = "1h"
+
+[dotfiles]
+enabled = true
