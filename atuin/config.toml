@@ -1,5 +1,7 @@
 sync_address = "https://atuin.jesteibice.com"
 sync_frequency = "1h"
 
+filter_mode_shell_up_key_binding = "directory"
+
 [dotfiles]
 enabled = true

@@ -935,7 +935,6 @@ source completions/tcpdump-completions.nu
 source completions/tldr-completions.nu
 source ~/.zoxide.nu
 
-# Atuin
 # Source this in your ~/.config/nushell/config.nu
 $env.ATUIN_SESSION = (atuin uuid)
 hide-env -i ATUIN_HISTORY_ID
@@ -1020,6 +1019,26 @@ $env.config = (
     )
 )
 
+$env.config = (
+    $env.config | upsert keybindings (
+        $env.config.keybindings
+        | append {
+            name: atuin
+            modifier: none
+            keycode: up
+            mode: [emacs, vi_normal, vi_insert]
+            event: {
+                until: [
+                    {send: menuup}
+                    {send: executehostcommand cmd: (_atuin_search_cmd '--shell-up-key-binding') }
+                ]
+            }
+        }
+    )
+)
+
+######
+
 # Load atuin dotfiles variables into environment
 def --env load-atuin-vars [] {
     let rec = (atuin dotfiles var list
@@ -1041,7 +1060,7 @@ def dev-tab [
 ] {
 
     # Use zoxide interactive to select directory
-    mut selected_dir = "" 
+    mut selected_dir = ""
 
     if ($directory | is-empty) {
         $selected_dir = (zoxide query --interactive)
@@ -1129,7 +1148,7 @@ export def create-pr [
         $commits | enumerate | each { |item|
             print $"($item.index + 1): ($item.item.message)"
         }
-        
+
         let selection = input "Enter selection (1-10): " | into int
         if ($selection < 1 or $selection > ($commits | length)) {
             print "Invalid selection"
@@ -1153,10 +1172,10 @@ export def create-pr [
     # Extract org, project, and repo from git remote if not provided
     let remote_info = if ($org | is-empty) or ($project | is-empty) or ($repo | is-empty) {
         let remote_url = git remote get-url origin | str trim
-        
+
         # Parse Azure DevOps URL patterns:
         # https://dev.azure.com/org/project/_git/repo
-        # https://org@dev.azure.com/org/project/_git/repo  
+        # https://org@dev.azure.com/org/project/_git/repo
         # git@ssh.dev.azure.com:v3/org/project/repo
         if ($remote_url | str contains "dev.azure.com") {
             if ($remote_url | str starts-with "git@ssh.dev.azure.com") {
@@ -1164,7 +1183,7 @@ export def create-pr [
                 let parts = $remote_url | str replace "git@ssh.dev.azure.com:v3/" "" | split row "/"
                 {
                     org: ($parts | get 0)
-                    project: ($parts | get 1) 
+                    project: ($parts | get 1)
                     repo: ($parts | get 2)
                 }
             } else {
@@ -1242,7 +1261,7 @@ export def create-pr [
                 }
             ]
         }
-        
+
         if $auto_complete {
             $base_payload | merge {
                 autoCompleteSetBy: {
@@ -1263,7 +1282,7 @@ export def create-pr [
             title: $title
             description: $description
         }
-        
+
         if $auto_complete {
             $base_payload | merge {
                 autoCompleteSetBy: {
@@ -1309,7 +1328,7 @@ export def create-pr [
         } catch { |inner_err|
             null
         }
-        
+
         if ($detailed_response != null) {
             print $"❌ API Error: ($err)"
             print $"Response body: ($detailed_response | to json --indent 2)"
@@ -1325,7 +1344,7 @@ export def create-pr [
             let pr_id = $response | get pullRequestId
             let pr_url = $"https://dev.azure.com/($org_name)/($project_name)/_git/($repo_name)/pullrequest/($pr_id)"
             print $"✅ Pull request created successfully!"
-            
+
             # Return structured data for piping
             {
                 id: $pr_id

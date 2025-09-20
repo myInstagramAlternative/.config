@@ -38,6 +38,7 @@ vim.o.hlsearch = false
 
 -- Make line numbers default
 vim.wo.number = true
+vim.wo.relativenumber = true
 
 -- Tabs vs spaces
 vim.o.tabstop = 2      -- A TAB character looks like 4 spaces

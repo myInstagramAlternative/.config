@@ -73,6 +73,7 @@
             pkgs.kustomize
             pkgs.ansible_2_17
             pkgs.jmespath
+            pkgs.tailspin
           ];
 
           homebrew = {
@@ -104,6 +105,7 @@
               "vitobotta/tap/hetzner_k3s"
               "television"
               "yq"
+              "syncthing"
             ];
 
             # onActivation.cleanup "zap";
