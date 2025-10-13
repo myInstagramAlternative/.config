@@ -74,6 +74,8 @@
             pkgs.ansible_2_17
             pkgs.jmespath
             pkgs.tailspin
+            pkgs.lazygit
+            pkgs.uv
           ];
 
           homebrew = {
