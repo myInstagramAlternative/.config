@@ -28,7 +28,7 @@ return {
       },
       quickfile = { enabled = true },
       scope = { enabled = true },
-      scroll = { enabled = true },
+      scroll = { enabled = true, animation = false },
       statuscolumn = { enabled = true },
       words = { enabled = true },
     },

@@ -1,7 +1,7 @@
 -- Set leader key
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.opt.scrolloff = 3
+vim.opt.scrolloff = 8
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -27,9 +27,30 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
 
 vim.api.nvim_set_keymap('i', 'jj', '<Esc>', { noremap = true })
 
--- Since clipboard is disabled, yank to 0 register and then copy to clipboard
-vim.api.nvim_set_keymap('n', '<leader>c', ':let @+=@0<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<leader>c', '"0y:let @+=@0<CR>', { noremap = true, silent = true })
+-- Yank to system clipboard via <leader>y / <leader>Y
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>Y", [["+Y]], { noremap = true, silent = true })
+
+-- Move when highlighted
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+
+-- Keep cursor in place when joining lines
+vim.keymap.set("n", "J", "mzJ`z")
+
+-- Center screen after half-page scrolls and searches
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
+
+-- Replace word under cursor globally without yanking it
+vim.keymap.set("n", "<leader>s", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
+
+vim.g.snacks_animate = false -- disable all animations - centering doesn't work well with it
+
+-- Paste over currently highlighted text without yanking it
+vim.keymap.set("x", "<leader>p", "\"_dP")
 
 vim.opt.rtp:prepend(lazypath)
 
@@ -54,7 +75,8 @@ vim.o.mousemoveevent = true
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
--- vim.o.clipboard = "unnamedplus"
+vim.o.clipboard = ""
+vim.g.clipboard = 'osc52'
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -66,18 +88,25 @@ vim.o.breakindent = true
 -- 	command = "write"
 -- })
 
--- Save undo history
+-- Save undo history, disable swap/backup, and set undodir
+vim.o.swapfile = false
+vim.o.backup = false
+vim.o.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.o.undofile = true
 
 -- Case-insensitive searching UNLESS \C or capital in search
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
+-- Don't highlight search results
+vim.opt.hlsearch = false
+vim.opt.incsearch = true
+
 -- Keep signcolumn on by default
 vim.wo.signcolumn = "auto"
 
 -- Decrease update time
-vim.o.updatetime = 250
+vim.o.updatetime = 50 --250
 vim.o.timeoutlen = 300
 
 -- Set completeopt to have a better completion experience
