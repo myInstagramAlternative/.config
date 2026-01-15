@@ -26,6 +26,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
 })
 
 vim.api.nvim_set_keymap('i', 'jj', '<Esc>', { noremap = true })
+vim.keymap.set('t', 'jj', [[<C-\><C-n>]], { desc = 'Terminal → Normal' })
 
 -- Yank to system clipboard via <leader>y / <leader>Y
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { noremap = true, silent = true })
@@ -114,6 +115,21 @@ vim.o.completeopt = "menuone,noselect"
 
 -- Set terminal gui colors to true
 vim.o.termguicolors = true
+
+-- Use Nushell as the shell for :! and terminal
+vim.o.shell = "/run/current-system/sw/bin/nu"
+vim.o.shellcmdflag = "-c"
+vim.o.shellquote = ""
+vim.o.shellxquote = ""
+-- NOTE on redirection compatibility:
+-- Neovim defaults assume POSIX redirection (e.g. 2>&1) for :make/:grep/quickfix.
+-- Nushell uses different operators, so some tools may not capture stderr as expected.
+-- If you notice quickfix/population issues, consider enabling these:
+--   vim.o.shellredir = "out+err> %s"      -- redirect stdout+stderr to file
+--   vim.o.shellpipe  = "| tee %s"         -- pipe stdout to tee (stderr not merged)
+-- Or keep nu for :terminal but use a POSIX shell for :make invocations.
+-- Ensure $SHELL matches for spawned terminals
+vim.env.SHELL = vim.o.shell
 
 -- add binaries installed by mason.nvim to path
 local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
