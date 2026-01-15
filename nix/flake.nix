@@ -76,6 +76,9 @@
             pkgs.tailspin
             pkgs.lazygit
             pkgs.uv
+            pkgs.age
+            pkgs.age-plugin-yubikey
+            pkgs.passage
           ];
 
           homebrew = {
