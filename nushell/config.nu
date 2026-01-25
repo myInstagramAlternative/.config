@@ -147,7 +147,7 @@ let light_theme = {
 
 # The default config record. This is where much of your global configuration is setup.
 $env.config = {
-    show_banner: true # true or false to enable or disable the welcome banner at startup
+    show_banner: false # true or false to enable or disable the welcome banner at startup
 
     ls: {
         use_ls_colors: true # use the LS_COLORS environment variable to colorize output
@@ -919,11 +919,12 @@ $env.config = {
 
 use ~/.cache/starship/init.nu
 use nuguish/ *
-use const/const.nu *
+use const/ *
 use kubernetes *
 # source scripts/nupdater/nupdater.nu
 source scripts/nuenv/nuenv.nu
 source scripts/nualiastips/nualiastips.nu
+source scripts/fastroute.nu
 source completions/bitwarden-cli-completions.nu
 source completions/cargo-completions.nu
 source completions/curl-completions.nu
