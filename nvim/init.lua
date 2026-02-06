@@ -53,6 +53,10 @@ vim.g.snacks_animate = false -- disable all animations - centering doesn't work 
 -- Paste over currently highlighted text without yanking it
 vim.keymap.set("x", "<leader>p", "\"_dP")
 
+-- Copy current file path to system clipboard
+vim.keymap.set("n", "<leader>pc", function() vim.fn.setreg("+", vim.fn.expand("%")) end,
+	{ noremap = true, silent = true, desc = "Copy file path to clipboard" })
+
 vim.opt.rtp:prepend(lazypath)
 
 -- Set highlight on search
@@ -140,9 +144,9 @@ require("lazy").setup("plugins")
 local runner = require("run")
 vim.keymap.set("n", "<leader>R", runner.run, { desc = "Run file (auto-detect interpreter)" })
 vim.keymap.set("x", "<leader>R", function()
-  local s = vim.fn.getpos("v")
-  local e = vim.fn.getpos(".")
-  local mode = vim.api.nvim_get_mode().mode
-  local vmode = (mode == "v" or mode == "V" or mode == "\22") and mode or vim.fn.visualmode()
-  require("run").run_visual_with_range(s, e, vmode)
+	local s = vim.fn.getpos("v")
+	local e = vim.fn.getpos(".")
+	local mode = vim.api.nvim_get_mode().mode
+	local vmode = (mode == "v" or mode == "V" or mode == "\22") and mode or vim.fn.visualmode()
+	require("run").run_visual_with_range(s, e, vmode)
 end, { desc = "Run selection (auto-detect)" })
