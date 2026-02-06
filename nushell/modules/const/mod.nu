@@ -168,3 +168,19 @@ export def oc-copilot-use [
     }
     oc-auth-swap 'github-copilot' --from $src
 }
+
+# Start OpenCode with Copilot profile selection. If 'work' is selected,
+# force the model to github-copilot/gpt-5 and open chat; otherwise, just open chat.
+export def oc-copilot-start [] {
+    let choice = (["work", "personal"] | input list "Choose Copilot profile" | default "work")
+
+    # Switch auth.json provider based on selection
+    oc-copilot-use $choice
+
+    # Launch OpenCode: force model for 'work', otherwise plain chat
+    if $choice == 'work' {
+        opencode -m github-copilot/gpt-5 -c
+    } else {
+        opencode -c
+    }
+}
