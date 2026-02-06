@@ -13,8 +13,8 @@ layout {
         pane split_direction="vertical" {
             pane command="nvim"
             pane {
-                command "opencode"
-                args "-c"
+                command "nu"
+                args "-l" "-c" "oc-copilot-start -c"
                 size "35%"
             }
         }
