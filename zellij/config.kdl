@@ -11,6 +11,8 @@ keybinds clear-defaults=true {
                 floating false
             }
         }
+        bind "Ctrl d" { Write 27 91 54 126; }  // Emulate PageDown: ESC [ 6 ~
+        bind "Ctrl u" { Write 27 91 53 126; }  // Emulate PageUp: ESC [ 5 ~
     }
     locked {
         bind "Ctrl g" { SwitchToMode "normal"; }
@@ -235,12 +237,14 @@ keybinds clear-defaults=true {
         bind "Ctrl b" { PageScrollUp; }
         bind "Ctrl c" { ScrollToBottom; SwitchToMode "normal"; }
         bind "d" { HalfPageScrollDown; }
+        bind "Ctrl d" { HalfPageScrollDown; }
         bind "Ctrl f" { PageScrollDown; }
         bind "h" { PageScrollUp; }
         bind "j" { ScrollDown; }
         bind "k" { ScrollUp; }
         bind "l" { PageScrollDown; }
         bind "u" { HalfPageScrollUp; }
+        bind "Ctrl u" { HalfPageScrollUp; }
     }
     entersearch {
         bind "Ctrl c" { SwitchToMode "scroll"; }
@@ -295,7 +299,7 @@ plugins {
         is_enabled true
         print_to_log true
         reaction_seconds "0.3"
-        triggers "nvim|vim|git|fzf|zoxide|atuin"
+        triggers "nvim|vim|fzf|zoxide|atuin"
     }
     compact-bar location="zellij:compact-bar"
     configuration location="zellij:configuration"
