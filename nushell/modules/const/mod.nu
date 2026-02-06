@@ -96,3 +96,75 @@ export def --wrapped page [...args] {
 
     passage ...$args $name
 }
+
+#nunununununununununununununununununununununununununununununun
+# OpenCode auth.json provider swap utilities
+
+# Swap a provider entry in OpenCode auth.json safely without reading/printing contents in Nushell.
+# One of --from | --json | --file must be provided.
+export def oc-auth-swap [
+    target: string,                  # provider id to update, e.g. 'github-copilot'
+    --from: string,                  # copy value from another provider key in auth.json
+    --json: string,                  # inline JSON object for the provider value
+    --file: path                     # path to a JSON file containing the provider object
+] {
+    let auth_path = $"($env.HOME)/.local/share/opencode/auth.json"
+
+    # Validate flags: exactly one of --from, --json, --file
+    let choices = (
+        [ $from, $json, $file ]
+        | where { |x| not ($x | is-empty) }
+        | length
+    )
+
+    if $choices == 0 {
+        error make { msg: "Provide exactly one of --from, --json, or --file" }
+    }
+    if $choices > 1 {
+        error make { msg: "Use only one of --from, --json, or --file" }
+    }
+
+    # Ensure auth.json exists
+    if not ($auth_path | path exists) {
+        error make { msg: $"Auth file not found: ($auth_path)" }
+    }
+
+    # Backup current file
+    cp $auth_path $"($auth_path).bak"
+
+    # Perform update using Nushell structured JSON (open parses JSON automatically)
+    let data = (open $auth_path)
+
+    if not ($file | is-empty) {
+        let obj = (open $file)
+        $data | upsert $target $obj | to json | save -f $auth_path
+    } else if not ($json | is-empty) {
+        let obj = ($json | from json)
+        $data | upsert $target $obj | to json | save -f $auth_path
+    } else {
+        # Ensure source key exists
+        if not ($data | columns | any { |x| $x == $from }) {
+            error make { msg: $"Source key not found in auth.json: ($from)" }
+        }
+        let obj = ($data | get $from)
+        $data | upsert $target $obj | to json | save -f $auth_path
+    }
+
+    # Preserve restrictive permissions
+    ^chmod 600 $auth_path
+}
+
+# Convenience: switch GitHub Copilot between work/personal entries kept in the same file.
+# Expects keys 'github-copilot-work' and 'github-copilot-personal' to exist.
+export def oc-copilot-use [
+    which: string  # 'work' | 'personal'
+] {
+    let src = if $which == 'work' {
+        'github-copilot-work'
+    } else if $which == 'personal' {
+        'github-copilot-personal'
+    } else {
+        error make { msg: "Use 'work' or 'personal'" }
+    }
+    oc-auth-swap 'github-copilot' --from $src
+}
