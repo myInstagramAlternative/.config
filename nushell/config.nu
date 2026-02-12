@@ -1042,6 +1042,10 @@ $env.config = (
 
 # Load atuin dotfiles variables into environment
 def --env load-atuin-vars [] {
+    atuin status out+err> /dev/null
+    if $env.LAST_EXIT_CODE != 0 {
+        error make {msg: "Failed to sync, please make sure you are logged in to atuin"}
+    }
     let rec = (atuin dotfiles var list
       | lines
       | parse --regex "^\\s*(?:export\\s+)?(?P<key>[^=\\s]+)\\s*=\\s*(?P<val>.*)$"
@@ -1052,7 +1056,11 @@ def --env load-atuin-vars [] {
 }
 
 # Auto-load atuin vars on shell startup
-load-atuin-vars
+try {
+    load-atuin-vars
+} catch {
+    print $"(ansi red)Failed to sync atuin dotfiles, please make sure you are logged in(ansi reset)"
+}
 
 
 def dev-tab [
