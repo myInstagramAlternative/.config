@@ -184,3 +184,47 @@ export def --wrapped oc-copilot-start [...rest: string] {
         opencode ...$rest
     }
 }
+
+#nunununununununununununununununununununununununununununununun
+# models.dev API
+
+# Fetch models from models.dev API and search through them interactively
+#
+# Usage:
+#   list-models
+#   list-models | get 0
+
+export def list-models [] {
+  # Fetch API data once and store in a variable
+  print "Fetching models from models.dev..."
+  let api_data = (http get https://models.dev/api.json)
+
+  # Get available providers and let user select using selector
+  let providers = ($api_data | columns)
+  let selected_provider = ($providers | input list --fuzzy "Select provider:")
+
+  # Get models for the selected provider
+  let provider_data = ($api_data | get -i $selected_provider)
+  if ($provider_data | is-empty) {
+    print $"❌ Provider '($selected_provider)' not found"
+    return
+  }
+
+  let models = ($provider_data | get -i models)
+  if ($models | is-empty) {
+    print $"❌ No models found for provider '($selected_provider)'"
+    return
+  }
+
+  # Convert to table format
+  let models_table = ($models | into record | transpose)
+
+  # Get model names for fuzzy selection
+  let model_names = ($models_table | get column0)
+
+  # Let user fuzzy select from models
+  let selected_model = ($model_names | input list --fuzzy $"Select model for ($selected_provider):")
+
+  # Return the full details of selected model
+  $models_table | where column0 == $selected_model | flatten | reject column0
+}
