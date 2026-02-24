@@ -66,7 +66,6 @@
             pkgs.sniffnet
             pkgs.mosh
             pkgs.kubecolor
-            pkgs.dotnet-sdk_8
             pkgs.zellij
             pkgs.atuin
             pkgs.eza
@@ -79,6 +78,7 @@
             pkgs.age
             pkgs.age-plugin-yubikey
             pkgs.passage
+            pkgs.moreutils
           ];
 
           homebrew = {
@@ -103,6 +103,7 @@
               "rustdesk"
               "hammerspoon"
               "tunnelblick"
+              "dotnet-sdk"
             ];
             brews = [
               "ffmpeg"
