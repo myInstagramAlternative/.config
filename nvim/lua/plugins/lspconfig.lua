@@ -48,6 +48,16 @@ return {
 
       -- Server configurations (Neovim 0.11+ style)
       local servers = {
+        bicep = {
+          cmd = { "/opt/homebrew/bin/dotnet", vim.fn.stdpath("data") .. "/mason/packages/bicep-lsp/extension/bicepLanguageServer/Bicep.LangServer.dll" },
+          cmd_env = {
+            DOTNET_ROOT = "/usr/local/share/dotnet",
+            DOTNET_CLI_TELEMETRY_OPTOUT = "1",
+            DOTNET_NOLOGO = "1",
+            DOTNET_SKIP_FIRST_TIME_EXPERIENCE = "1",
+            DOTNET_EnableDiagnostics = "0",
+          },
+        },
         lua_ls = {
           settings = {
             Lua = {

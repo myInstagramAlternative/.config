@@ -15,6 +15,14 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 
+-- Register .bicepparam as its own filetype so the bicep LSP treats them
+-- as parameter files instead of regular bicep files (prevents false errors).
+vim.filetype.add({
+  extension = {
+    bicepparam = "bicep-params",
+  },
+})
+
 vim.cmd("au BufRead,BufNewFile *.templ setfiletype templ")
 
 vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {

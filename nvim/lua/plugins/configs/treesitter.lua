@@ -1,5 +1,6 @@
 return {
   ensure_installed = {
+    "bicep",
     "go",
     "lua",
     "pkl",
