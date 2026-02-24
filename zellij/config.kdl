@@ -298,7 +298,7 @@ plugins {
     autolock location="file:/Users/jesteibice/.config/zellij/plugins/zellij-autolock.wasm" {
         is_enabled true
         print_to_log true
-        reaction_seconds "0.3"
+        reaction_seconds "0.5"
         triggers "nvim|vim|fzf|zoxide|atuin"
     }
     compact-bar location="zellij:compact-bar"
