@@ -5,14 +5,14 @@ vim.opt.scrolloff = 8
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-	vim.fn.system({
-		"git",
-		"clone",
-		"--filter=blob:none",
-		"https://github.com/folke/lazy.nvim.git",
-		"--branch=stable", -- latest stable release
-		lazypath,
-	})
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
 end
 
 -- Register .bicepparam as its own filetype so the bicep LSP treats them
@@ -26,11 +26,11 @@ vim.filetype.add({
 vim.cmd("au BufRead,BufNewFile *.templ setfiletype templ")
 
 vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
-	pattern = { "*.templ" },
-	callback = function()
-		local buf = vim.api.nvim_get_current_buf()
-		vim.api.nvim_buf_set_option(buf, "filetype", "templ")
-	end,
+  pattern = { "*.templ" },
+  callback = function()
+    local buf = vim.api.nvim_get_current_buf()
+    vim.api.nvim_buf_set_option(buf, "filetype", "templ")
+  end,
 })
 
 vim.api.nvim_set_keymap('i', 'jj', '<Esc>', { noremap = true })
@@ -63,7 +63,7 @@ vim.keymap.set("x", "<leader>p", "\"_dP")
 
 -- Copy current file path to system clipboard
 vim.keymap.set("n", "<leader>pc", function() vim.fn.setreg("+", vim.fn.expand("%")) end,
-	{ noremap = true, silent = true, desc = "Copy file path to clipboard" })
+  { noremap = true, silent = true, desc = "Copy file path to clipboard" })
 
 vim.opt.rtp:prepend(lazypath)
 
@@ -152,9 +152,9 @@ require("lazy").setup("plugins")
 local runner = require("run")
 vim.keymap.set("n", "<leader>R", runner.run, { desc = "Run file (auto-detect interpreter)" })
 vim.keymap.set("x", "<leader>R", function()
-	local s = vim.fn.getpos("v")
-	local e = vim.fn.getpos(".")
-	local mode = vim.api.nvim_get_mode().mode
-	local vmode = (mode == "v" or mode == "V" or mode == "\22") and mode or vim.fn.visualmode()
-	require("run").run_visual_with_range(s, e, vmode)
+  local s = vim.fn.getpos("v")
+  local e = vim.fn.getpos(".")
+  local mode = vim.api.nvim_get_mode().mode
+  local vmode = (mode == "v" or mode == "V" or mode == "\22") and mode or vim.fn.visualmode()
+  require("run").run_visual_with_range(s, e, vmode)
 end, { desc = "Run selection (auto-detect)" })
