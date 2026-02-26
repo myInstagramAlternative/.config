@@ -10,7 +10,8 @@ return {
         { "<leader>fb", builtin.buffers,                                                  desc = "Find Buffer" },
         { "<leader>ff", builtin.find_files,                                               desc = "Find File" },
         { "<leader>fg", builtin.live_grep,                                                desc = "Find with Grep" },
-        { "<leader>fh", builtin.help_tags,                                                desc = "Find Help" },
+        { "<leader>fw", builtin.grep_string,                                              desc = "Find Word under Cursor" },
+        { "<leader>fH", builtin.help_tags,                                                desc = "Find Help" },
         { "<leader>fn", ":Telescope file_browser path=%:p:h select_buffer=true<CR>", desc = "File Browser" },
         { "<leader>z", function() require('zellij_tabs').zellij_tabs() end,               desc = "Zellij Tabs" },
       })

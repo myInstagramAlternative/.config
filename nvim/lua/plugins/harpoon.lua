@@ -18,7 +18,7 @@ return {
         { desc = "Harpoon: add current file" })
 
       -- Use `hh` for Telescope quick menu
-      vim.keymap.set("n", "hh", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end,
+      vim.keymap.set("n", "<leader>fh", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end,
         { desc = "Harpoon: quick menu" })
 
       vim.keymap.set("n", "h1", function() harpoon:list():select(1) end,
