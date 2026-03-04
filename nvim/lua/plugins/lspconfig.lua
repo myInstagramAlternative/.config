@@ -25,6 +25,18 @@ return {
       -- Reasonable updatetime for hover and diagnostics
       vim.o.updatetime = 1000
 
+      -- Disable LSP diagnostics for test files
+      vim.api.nvim_create_autocmd({ "LspAttach", "BufEnter" }, {
+        group = vim.api.nvim_create_augroup('lsp_disable_for_tests', { clear = true }),
+        callback = function(args)
+          local buf = args.buf
+          local bufname = vim.api.nvim_buf_get_name(buf)
+          if bufname:match("/test/") or bufname:match("%.test%.") then
+            vim.diagnostic.enable(false, { buffer = buf })
+          end
+        end,
+      })
+
       -- General on_attach function for LSP
       local on_attach = function(client, bufnr)
         local buf_set_keymap = function(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end

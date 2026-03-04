@@ -70,7 +70,7 @@
             pkgs.atuin
             pkgs.eza
             pkgs.kustomize
-            pkgs.ansible_2_17
+            pkgs.ansible
             pkgs.jmespath
             pkgs.tailspin
             pkgs.lazygit
@@ -79,6 +79,8 @@
             pkgs.age-plugin-yubikey
             pkgs.passage
             pkgs.moreutils
+            pkgs.smassh
+            pkgs.tirith
           ];
 
           homebrew = {
@@ -124,7 +126,7 @@
               env = pkgs.buildEnv {
                 name = "system-applications";
                 paths = config.environment.systemPackages;
-                pathsToLink = "/Applications";
+                pathsToLink = [ "/Applications" ];
               };
             in
             pkgs.lib.mkForce ''
@@ -224,10 +226,12 @@
 
           programs.git = {
             enable = true;
-            aliases = {
-              dlog = "-c diff.external=difft log --ext-diff";
-              dshow = "-c diff.external=difft show --ext-diff";
-              ddiff = "-c diff.external=difft diff";
+            settings = {
+              alias = {
+                dlog = "-c diff.external=difft log --ext-diff";
+                dshow = "-c diff.external=difft show --ext-diff";
+                ddiff = "-c diff.external=difft diff";
+              };
             };
           };
 
