@@ -1,5 +1,14 @@
 {
   description = "Example nix-darwin system flake";
+
+  # Updating:
+  #   nix flake update --flake ~/.config/nix          # update ALL inputs
+  #   nix flake update nixpkgs --flake ~/.config/nix  # update single input
+  #   git -C ~/.config add -f nix/flake.lock && git -C ~/.config commit -m "update flake inputs"
+  #   sudo darwin-rebuild switch --flake ~/.config/nix#m4pro
+  #
+  # Always update nix-darwin + home-manager together with nixpkgs to avoid version mismatches.
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:LnL7/nix-darwin";
@@ -57,7 +66,6 @@
             pkgs.ripgrep
             pkgs.fd
             pkgs.go
-            pkgs.openscad
             pkgs.python312Packages.urllib3
             pkgs.python312Packages.pip
             pkgs.bat
