@@ -58,6 +58,9 @@ vim.keymap.set("n", "<leader>s", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left>
 
 vim.g.snacks_animate = false -- disable all animations - centering doesn't work well with it
 
+-- Custom snippets path for LuaSnip
+vim.g.vscode_snippets_path = vim.fn.stdpath("config") .. "/snippets"
+
 -- Paste over currently highlighted text without yanking it
 vim.keymap.set("x", "<leader>p", "\"_dP")
 
