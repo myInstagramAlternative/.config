@@ -81,8 +81,7 @@ return {
                 "",
                 "Command:",
                 "  :" .. range_prefix .. resolve_cmd(entry.value, range_start),
-        { "<leader>fS", ":Telescope luasnip<CR>",                                     desc = "Find Snippets", mode = "n" },
-      })
+              })
             end,
           }),
           attach_mappings = function(prompt_bufnr)
@@ -112,6 +111,7 @@ return {
           vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "x", false)
           open_sed_picker({ visual = true })
         end, desc = "Sed Snippets (selection)", mode = "v" },
+        { "<leader>fS", ":Telescope luasnip<CR>", desc = "Find Snippets", mode = "n" },
       })
     end,
     opts = function()
