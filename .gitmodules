@@ -13,3 +13,6 @@
 [submodule ".tmux"]
 	path = .tmux
 	url = https://github.com/gpakosz/.tmux.git
+[submodule "nushell/modules/kubernetes.nu"]
+	path = nushell/modules/kubernetes.nu
+	url = https://github.com/fj0r/kubernetes.nu.git

@@ -89,6 +89,8 @@
             pkgs.moreutils
             pkgs.smassh
             pkgs.tirith
+            pkgs.llama-cpp
+            pkgs.awscli2
           ];
 
           homebrew = {
