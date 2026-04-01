@@ -179,10 +179,13 @@
             trackpad.Dragging = true;
             trackpad.TrackpadRightClick = true;
             loginwindow.GuestEnabled = false;
-            NSGlobalDomain.KeyRepeat = 2;
-            NSGlobalDomain."com.apple.swipescrolldirection" = false;
+            NSGlobalDomain = {
+              InitialKeyRepeat = 12;
+              KeyRepeat = 1;
+              ApplePressAndHoldEnabled = false;
+              "com.apple.swipescrolldirection" = false;
+            };
           };
-
           system.keyboard.enableKeyMapping = true;
           system.keyboard.remapCapsLockToControl = true;
 
