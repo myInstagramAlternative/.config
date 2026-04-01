@@ -1010,35 +1010,56 @@ $env.config = ($env.config | default [] keybindings)
 $env.config = (
     $env.config | upsert keybindings (
         $env.config.keybindings
-        | append {
-            name: atuin
-            modifier: control
-            keycode: char_r
-            mode: [emacs, vi_normal, vi_insert]
-            event: { send: executehostcommand cmd: (_atuin_search_cmd) }
-        }
-    )
-)
-
-$env.config = (
-    $env.config | upsert keybindings (
-        $env.config.keybindings
-        | append {
-            name: atuin
-            modifier: none
-            keycode: up
-            mode: [emacs, vi_normal, vi_insert]
-            event: {
-                until: [
-                    {send: menuup}
-                    {send: executehostcommand cmd: (_atuin_search_cmd '--shell-up-key-binding') }
-                ]
+        | append [
+            {
+                name: atuin
+                modifier: control
+                keycode: char_r
+                mode: [emacs, vi_normal, vi_insert]
+                event: { send: executehostcommand cmd: (_atuin_search_cmd) }
             }
-        }
+            {
+                name: tv_completion
+                modifier: control
+                keycode: char_t
+                mode: [emacs, vi_normal, vi_insert]
+                event: { send: executehostcommand cmd: "tv_smart_autocomplete" }
+            }
+            {
+                name: atuin_up
+                modifier: none
+                keycode: up
+                mode: [emacs, vi_normal, vi_insert]
+                event: {
+                    until: [
+                        {send: menuup}
+                        {send: executehostcommand cmd: (_atuin_search_cmd '--shell-up-key-binding') }
+                    ]
+                }
+            }
+        ]
     )
 )
 
 ######
+
+# Television smart autocomplete (Ctrl+T)
+def tv_smart_autocomplete [] {
+    let line = (commandline)
+    let cursor = (commandline get-cursor)
+    let lhs = ($line | str substring 0..$cursor)
+    let rhs = ($line | str substring $cursor..)
+    let output = (tv --no-status-bar --inline --autocomplete-prompt $lhs | str trim)
+
+    if ($output | str length) > 0 {
+        let needs_space = not ($lhs | str ends-with " ")
+        let lhs_with_space = if $needs_space { $"($lhs) " } else { $lhs }
+        let new_line = $lhs_with_space + $output + $rhs
+        let new_cursor = ($lhs_with_space + $output | str length)
+        commandline edit --replace $new_line
+        commandline set-cursor $new_cursor
+    }
+}
 
 # Load atuin dotfiles variables into environment
 def --env load-atuin-vars [] {

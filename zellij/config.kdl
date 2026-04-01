@@ -299,7 +299,7 @@ plugins {
         is_enabled true
         print_to_log true
         reaction_seconds "0.5"
-        triggers "nvim|vim|fzf|zoxide|atuin"
+        triggers "nvim|vim|fzf|zoxide|atuin|tv"
     }
     compact-bar location="zellij:compact-bar"
     configuration location="zellij:configuration"
