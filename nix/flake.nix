@@ -260,7 +260,7 @@
     {
       # Build darwin flake using:
       # $ darwin-rebuild build --flake .#simple
-      darwinConfigurations."m4pro" = nix-darwin.lib.darwinSystem {
+      darwinConfigurations."mchetiri-254" = nix-darwin.lib.darwinSystem {
         modules = [
           configuration
           nix-homebrew.darwinModules.nix-homebrew
@@ -285,6 +285,6 @@
       };
 
       # Expose the package set, including overlays, for convenience.
-      darwinPackages = self.darwinConfigurations."m4pro".pkgs;
+      darwinPackages = self.darwinConfigurations."mchetiri-254".pkgs;
     };
 }
