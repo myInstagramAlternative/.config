@@ -132,7 +132,7 @@ vim.o.completeopt = "menuone,noselect"
 vim.o.termguicolors = true
 
 -- Use Nushell as the shell for :! and terminal
-vim.o.shell = "/run/current-system/sw/bin/nu"
+vim.o.shell = vim.fn.exepath("nu") ~= "" and vim.fn.exepath("nu") or "/bin/sh"
 vim.o.shellcmdflag = "-c"
 vim.o.shellquote = ""
 vim.o.shellxquote = ""
