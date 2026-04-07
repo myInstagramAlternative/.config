@@ -373,7 +373,7 @@ default_shell "nu"
 // The folder in which Zellij will look for layouts
 // (Requires restart)
 //
-layout_dir "layouts"
+// layout_dir "" # not needed lol
 
 // The folder in which Zellij will look for themes
 // (Requires restart)

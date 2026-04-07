@@ -91,6 +91,8 @@
             pkgs.tirith
             pkgs.llama-cpp
             pkgs.awscli2
+            pkgs.pre-commit
+            pkgs.git-absorb
           ];
 
           homebrew = {
@@ -116,6 +118,7 @@
               "hammerspoon"
               "tunnelblick"
               "dotnet-sdk"
+              "upscayl"
             ];
             brews = [
               "ffmpeg"
