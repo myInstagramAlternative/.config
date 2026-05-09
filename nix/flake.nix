@@ -58,7 +58,7 @@
             pkgs.jdk
             pkgs.wget
             pkgs.tlrc
-            pkgs.openapi-generator-cli
+            # pkgs.openapi-generator-cli # broken: upstream patch hash mismatch (23326.patch)
             pkgs.silver-searcher
             pkgs.nmap
             # pkgs.blender # broken...
@@ -93,6 +93,8 @@
             pkgs.awscli2
             pkgs.pre-commit
             pkgs.git-absorb
+            pkgs.restic
+            pkgs.zed-editor
           ];
 
           homebrew = {
@@ -119,6 +121,7 @@
               "tunnelblick"
               "dotnet-sdk"
               "upscayl"
+              "kitlangton-hex"
             ];
             brews = [
               "ffmpeg"
