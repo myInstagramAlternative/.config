@@ -59,7 +59,7 @@
             pkgs.wget
             pkgs.tlrc
             # pkgs.openapi-generator-cli # broken: upstream patch hash mismatch (23326.patch)
-            pkgs.silver-searcher
+            # pkgs.silver-searcher
             pkgs.nmap
             # pkgs.blender # broken...
             # pkgs.steam # broken glibc-nolibgcc-2.40-36
@@ -94,7 +94,7 @@
             pkgs.pre-commit
             pkgs.git-absorb
             pkgs.restic
-            pkgs.zed-editor
+            pkgs.fswatch
           ];
 
           homebrew = {
@@ -122,6 +122,7 @@
               "dotnet-sdk"
               "upscayl"
               "kitlangton-hex"
+              "ungoogled-chromium"
             ];
             brews = [
               "ffmpeg"
