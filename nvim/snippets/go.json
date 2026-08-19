@@ -1,0 +1,94 @@
+{
+  "Go Error Check": {
+    "prefix": "iferr",
+    "body": [
+      "if err != nil {",
+      "\t${1:return ${2:err}}",
+      "}"
+    ],
+    "description": "If error not nil"
+  },
+  "Go Function": {
+    "prefix": "func",
+    "body": [
+      "func ${1:name}(${2:params}) ${3:returnType} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Function declaration"
+  },
+  "Go Method": {
+    "prefix": "meth",
+    "body": [
+      "func (${1:r} *${2:Type}) ${3:Name}(${4:params}) ${5:returnType} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Method declaration"
+  },
+  "Go Struct": {
+    "prefix": "st",
+    "body": [
+      "type ${1:Name} struct {",
+      "\t${2:Field} ${3:Type}",
+      "}"
+    ],
+    "description": "Struct declaration"
+  },
+  "Go Interface": {
+    "prefix": "iface",
+    "body": [
+      "type ${1:Name} interface {",
+      "\t${2:Method}(${3:params}) ${4:returnType}",
+      "}"
+    ],
+    "description": "Interface declaration"
+  },
+  "Go Test Function": {
+    "prefix": "ttest",
+    "body": [
+      "func Test${1:Name}(t *testing.T) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Test function"
+  },
+  "Go Table Test": {
+    "prefix": "tdt",
+    "body": [
+      "tests := []struct {",
+      "\tname string",
+      "\t${1:fields}",
+      "}{",
+      "\t{",
+      "\t\tname: \"${2:test name}\",",
+      "\t},",
+      "}",
+      "",
+      "for _, tt := range tests {",
+      "\tt.Run(tt.name, func(t *testing.T) {",
+      "\t\t$0",
+      "\t})",
+      "}"
+    ],
+    "description": "Table-driven test"
+  },
+  "Go Goroutine": {
+    "prefix": "gor",
+    "body": [
+      "go func() {",
+      "\t$0",
+      "}()"
+    ],
+    "description": "Goroutine"
+  },
+  "Go Defer": {
+    "prefix": "def",
+    "body": [
+      "defer func() {",
+      "\t$0",
+      "}()"
+    ],
+    "description": "Defer anonymous function"
+  }
+}

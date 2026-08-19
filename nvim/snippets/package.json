@@ -1,0 +1,16 @@
+{
+  "name": "custom-snippets",
+  "contributes": {
+    "snippets": [
+      { "language": "go", "path": "./go.json" },
+      { "language": "lua", "path": "./lua.json" },
+      { "language": "javascript", "path": "./javascript.json" },
+      { "language": "typescript", "path": "./typescript.json" },
+      { "language": "python", "path": "./python.json" },
+      { "language": "rust", "path": "./rust.json" },
+      { "language": "bicep", "path": "./bicep.json" },
+      { "language": "bicep-params", "path": "./bicep.json" },
+      { "language": "all", "path": "./global.json" }
+    ]
+  }
+}

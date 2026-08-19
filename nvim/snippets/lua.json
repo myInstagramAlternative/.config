@@ -1,0 +1,56 @@
+{
+  "Lua Function": {
+    "prefix": "fn",
+    "body": [
+      "local function ${1:name}(${2:params})",
+      "\t$0",
+      "end"
+    ],
+    "description": "Local function"
+  },
+  "Lua Module": {
+    "prefix": "mod",
+    "body": [
+      "local M = {}",
+      "",
+      "function M.${1:name}(${2:params})",
+      "\t$0",
+      "end",
+      "",
+      "return M"
+    ],
+    "description": "Module pattern"
+  },
+  "Lua For Pairs": {
+    "prefix": "forp",
+    "body": [
+      "for ${1:k}, ${2:v} in pairs(${3:table}) do",
+      "\t$0",
+      "end"
+    ],
+    "description": "For pairs loop"
+  },
+  "Lua For Ipairs": {
+    "prefix": "fori",
+    "body": [
+      "for ${1:i}, ${2:v} in ipairs(${3:table}) do",
+      "\t$0",
+      "end"
+    ],
+    "description": "For ipairs loop"
+  },
+  "Lua If": {
+    "prefix": "iff",
+    "body": [
+      "if ${1:condition} then",
+      "\t$0",
+      "end"
+    ],
+    "description": "If statement"
+  },
+  "Lua Require": {
+    "prefix": "req",
+    "body": "local ${1:mod} = require(\"${2:$1}\")",
+    "description": "Require module"
+  }
+}
