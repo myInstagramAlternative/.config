@@ -377,7 +377,7 @@ export def create-pr [
     print $"Selected title: ($title)"
 
     # Ask if description is needed
-    let use_description = input "Use commit message as description? (y/N): " | str downcase
+    let use_description = input "Use commit message as description? (y/N): " | str lowercase
     let description = if ($use_description == "y" or $use_description == "yes") {
         $title
     } else {
@@ -576,4 +576,144 @@ export def create-pr [
     } else {
         null
     }
+}
+
+#nunununununununununununununununununununununununununununununun
+# shodan
+
+### Fetch certificates for a domain from Shodan CTL, filter to valid ones (not expired),
+### convert dates, and push hash column to the back. Open in explore.
+### Usage:
+###   shodan-certs eyetelsp.com
+###   shodan-certs eyetelsp.com --peek
+export def shodan-certs [
+    domain: string  # Domain to query
+    --peek (-p)  # Passed to explore: output cell value under cursor on quit
+    --tail (-t)  # Passed to explore: start scrolled to bottom
+    --index (-i)  # Passed to explore: show row indexes
+    --head = true  # Passed to explore: show column headers
+] {
+    http get $"https://ctl.shodan.io/api/v1/domain/($domain)"
+    | where {|x| $x.not_after > ((date now | format date '%s') | into int)}
+    | update not_before {|v| $v.not_before | into datetime --format '%s'}
+    | update not_after {|v| $v.not_after | into datetime --format '%s'}
+    | move hash --after ($in | first | columns | last)
+    | explore --head=$head --index=$index --tail=$tail --peek=$peek
+}
+
+#nunununununununununununununununununununununununununununununun
+# azure-devops.nu — Azure DevOps helper functions
+#
+# Requirements:
+#   $env.AZURE_DEVOPS_PAT must be set to your Personal Access Token
+#   Must be run from within a git repo with an Azure DevOps origin remote
+
+# Parse Azure DevOps git remote URL and return { org, project, repo }
+def ado-remote-info [] {
+    let remote = (git remote get-url origin)
+
+    let path = if ($remote | str starts-with "git@") {
+        # SSH: git@ssh.dev.azure.com:v3/{org}/{project}/{repo}
+        $remote | split row ":" | last
+    } else {
+        # HTTPS: https://dev.azure.com/{org}/{project}/_git/{repo}
+        # or:    https://{org}@dev.azure.com/{org}/{project}/_git/{repo}
+        let no_proto = ($remote | split row "://" | last)
+        let no_user = if ($no_proto | str contains "@") {
+            $no_proto | split row "@" | last
+        } else {
+            $no_proto
+        }
+        $no_user | split row "/" | skip 1 | str join "/"
+    }
+
+    let segments = ($path | split row "/" | where $it != "_git" | where $it != "v3")
+
+    {
+        org: ($segments | first),
+        project: ($segments | skip 1 | first),
+        repo: ($segments | skip 2 | first)
+    }
+}
+
+# Get the Base64-encoded Basic auth header value from AZURE_DEVOPS_PAT env var
+def ado-auth [] {
+    $":($env.AZURE_DEVOPS_PAT)" | encode base64
+}
+
+# Get the repository GUID for the current repo (auto-detected from git origin)
+export def ado-repo-id [] {
+    let info = (ado-remote-info)
+    let auth = (ado-auth)
+    let url = $"https://dev.azure.com/($info.org)/($info.project)/_apis/git/repositories/($info.repo)?api-version=7.1"
+    let headers = [Authorization $"Basic ($auth)"]
+    http get --headers $headers $url -e | get id
+}
+
+# Get full repo info for the current repo (returns the full JSON object)
+export def ado-repo-info [] {
+    let info = (ado-remote-info)
+    let auth = (ado-auth)
+    let url = $"https://dev.azure.com/($info.org)/($info.project)/_apis/git/repositories/($info.repo)?api-version=7.1"
+    let headers = [Authorization $"Basic ($auth)"]
+    http get --headers $headers $url -e
+}
+
+# List pull requests for the current repo.
+#
+# Optional params:
+#   --status     active (default), completed, abandoned, all
+#   --top        number of PRs to return (default 100)
+#   --target     target branch name, e.g. "main" (optional)
+#
+# Examples:
+#   ado-pull-requests                          # active PRs
+#   ado-pull-requests --status all --top 20    # all PRs, max 20
+#   ado-pull-requests --target main            # active PRs targeting main
+export def ado-pull-requests [
+    --status: string = "active"
+    --top: int = 100
+    --target: string
+    --peek (-p)  # Passed to explore: output cell value under cursor on quit
+    --tail (-t)  # Passed to explore: start scrolled to bottom
+    --index (-i)  # Passed to explore: show row indexes
+    --head = true  # Passed to explore: show column headers
+] {
+    let info = (ado-remote-info)
+    let auth = (ado-auth)
+
+    let query = if $target != null {
+        $"searchCriteria.status=($status)&searchCriteria.targetRefName=refs/heads/($target)&$top=($top)"
+    } else {
+        $"searchCriteria.status=($status)&$top=($top)"
+    }
+
+    let url = $"https://dev.azure.com/($info.org)/($info.project)/_apis/git/repositories/($info.repo)/pullrequests?($query)&api-version=7.1"
+    let headers = [Authorization $"Basic ($auth)"]
+
+    let response = (http get --headers $headers $url -e)
+
+    let rows = ($response.value
+        | update createdBy {|row| if ($row.createdBy == null) { null } else { $row.createdBy.uniqueName }}
+        | update closedDate {|v| if ($v.closedDate | is-empty) { null } else { $v.closedDate | into datetime }}
+        | update creationDate {|v| $v.creationDate | into datetime}
+        | reject lastMergeCommit? url? reviewers? links? _links?)
+
+    if ($rows | is-empty) {
+        print "No pull requests found."
+        return
+    }
+
+    let first_cols = [title description status createdBy creationDate closedDate]
+    let all_cols = ($rows | columns | uniq)
+    let rest_cols = ($all_cols | where {|c| $c not-in $first_cols})
+    let missing = ($first_cols | where {|c| $c not-in $all_cols})
+
+    let normalized = ($rows
+        | each {|r| $all_cols | reduce -f {} {|c, acc| $acc | insert $c ($r | get -o $c)}}
+        | default null ...$missing)
+
+    $normalized
+        | select ...($first_cols | append $rest_cols)
+        | explore --head=$head --index=$index --tail=$tail --peek=$peek
 }
