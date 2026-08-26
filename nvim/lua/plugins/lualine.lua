@@ -6,7 +6,7 @@ return {
     opts = {
       options = {
         icons_enabled = true,
-        theme = 'nord',
+        theme = 'tokyonight',
         component_separators = '|',
         section_separators = { left = '', right = '' },
         nord_contrast = true,

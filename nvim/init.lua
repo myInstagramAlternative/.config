@@ -70,9 +70,6 @@ vim.keymap.set("n", "<leader>pc", function() vim.fn.setreg("+", vim.fn.expand("%
 
 vim.opt.rtp:prepend(lazypath)
 
--- Set highlight on search
-vim.o.hlsearch = false
-
 -- Make line numbers default
 vim.wo.number = true
 vim.wo.relativenumber = true
