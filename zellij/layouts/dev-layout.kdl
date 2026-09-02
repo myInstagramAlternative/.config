@@ -11,11 +11,16 @@ layout {
 
     tab {
         pane split_direction="vertical" {
-            pane command="nvim"
+            pane {
+                name "nvim"
+                command "nvim"
+                args "+FFFTOP2"
+            }
             pane {
                 command "nu"
-                args "-l" "-c" "oc-copilot-start -c"
+                args "-l" "-c" "opencode -c"
                 size "35%"
+                focus true
             }
         }
     }

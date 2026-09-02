@@ -33,6 +33,62 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
 	end,
 })
 
+
+vim.api.nvim_create_user_command("FFFMRU", function()
+	local fff = require("fff")
+	local core = require("fff.core")
+
+	-- Initialize FFF and start indexing.
+	core.ensure_initialized()
+	fff.scan_files()
+
+	local function search()
+		local result = fff.file_search("", {
+			mode = "files",
+			max_results = 1,
+		})
+
+		if result and result.items and result.items[1] then
+			local item = result.items[1]
+			vim.cmd.edit(vim.fn.fnameescape(item.path or item.relative_path))
+			return
+		end
+
+		vim.defer_fn(search, 200)
+	end
+
+	search()
+end, {})
+
+vim.api.nvim_create_user_command("FFFTOP2", function()
+	local fff = require("fff")
+	local core = require("fff.core")
+
+	core.ensure_initialized()
+	fff.scan_files()
+
+	local function search()
+		local result = fff.file_search("", {
+			mode = "files",
+			max_results = 2,
+		})
+
+		if not result or not result.items or #result.items < 2 then
+			vim.defer_fn(search, 200)
+			return
+		end
+
+		local first = result.items[1]
+		local second = result.items[2]
+
+		vim.cmd.edit(vim.fn.fnameescape(first.path or first.relative_path))
+		vim.cmd("split " .. vim.fn.fnameescape(second.path or second.relative_path))
+	end
+
+	search()
+end, {})
+
+
 vim.api.nvim_set_keymap('i', 'jj', '<Esc>', { noremap = true })
 vim.keymap.set('t', 'jj', [[<C-\><C-n>]], { desc = 'Terminal → Normal' })
 
