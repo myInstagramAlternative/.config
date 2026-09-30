@@ -95,6 +95,7 @@
             pkgs.git-absorb
             pkgs.restic
             pkgs.fswatch
+            pkgs.git-credential-manager
           ];
 
           homebrew = {
