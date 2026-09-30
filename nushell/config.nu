@@ -1077,8 +1077,8 @@ def --env load-atuin-vars [] {
 }
 
 # Auto-load atuin vars on shell startup
-try {
-    load-atuin-vars
-} catch {
-    print $"(ansi red)Failed to sync atuin dotfiles, please make sure you are logged in(ansi reset)"
-}
+# try {
+#     load-atuin-vars
+# } catch {
+#     print $"(ansi red)Failed to sync atuin dotfiles, please make sure you are logged in(ansi reset)"
+# }
